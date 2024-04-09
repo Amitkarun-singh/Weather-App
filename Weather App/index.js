@@ -142,13 +142,15 @@ async function fetchSearchWeatherInfo(city) {
     grantAccessContainer.classList.remove("active");
 
     try {
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`);
+        const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${API_KEY}`);
 
         if(response.ok){
             const data = await response.json();
-            loadingScreen.classList.remove("active");
-            userInfoContainer.classList.add("active");
-            renderWeatherInfo(data);
+            const userCoordinates = {
+                lat: data[0]?.lat,
+                lon: data[0]?.lon,
+            }
+        fetchUserWeatherInfo(userCoordinates);
         }else{
             const errorData = await response.json();
             console.log("Error Response:", errorData);
